@@ -22,7 +22,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+This is to use with typeform to aggregate specific data based on your feedback.
 
 ## Development
 
