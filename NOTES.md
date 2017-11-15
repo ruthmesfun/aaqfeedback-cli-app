@@ -1,19 +1,27 @@
-1. install the Gemfile
+Choices:
+ - Overall data
+    - start date & end date
+      >> average star rating
+      >> # of students who responded
+      >> Frequency of choice of grows
+      >> Frequency of choice of glows
+ - Technical Coach data
+    - Grab a list of Technical Coaches
+      - Choose which TC
+        - Get start date and end date
+          >> average star rating
+          >> # of students who responded
+          >> Frequency of choice of grows
+          >> Frequency of choice of glows
+          >> comments
+    - All
+      - Start date and end date
+        >> average star rating
+        >> # of students who responded
+        >> Frequency of choice of grows
+        >> Frequency of choice of glows
+        >> comments
 
-" What kind of reports would you like me to populate?"
-" Overall monthly report, Overall weekly report, Overall daily report, Technical Coach monthly report"
-If Overall monthly report:
->> Shows average star rating
->> # of students who responded that month
->> Frequency of each response
+#1. Grab data from the API
 
-If Overall daily report:
->> Shows average star rating
->> # of students who responded that month
->> Frequency of each response
-
-If Technical Coach Monthly:
-- Ask which student, then:
->> Shows average star rating
->> # of students who responded that month
->> Frequency of each respons
+API(https://api.typeform.com/v1/form/TW4DdU?key=0467013b2367a06ce1c32423a7b2f43483fce397)

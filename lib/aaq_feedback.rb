@@ -1,5 +1,11 @@
-require "aaq_feedback/version"
+require 'rest-client'
+require 'json'
+require 'pry'
+
+require_relative "aaq_feedback/version"
+require_relative "aaq_feedback/api"
+require_relative "aaq_feedback/cli"
+require_relative "aaq_feedback/report"
 
 module AaqFeedback
-  # Your code goes here...
 end
