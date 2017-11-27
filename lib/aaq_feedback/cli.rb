@@ -15,7 +15,7 @@ class AaqFeedback::CLI
     input = gets.strip.to_i
 
     if input == 1
-      puts AaqFeedback::API.data_list
+      puts AaqFeedback::API.survey
     elsif input == 2
       puts "Technical Coach"
     else
