@@ -15,7 +15,17 @@ class AaqFeedback::CLI
     input = gets.strip.to_i
 
     if input == 1
-      puts AaqFeedback::API.survey
+      puts " Would you like 1. All data, 2. Average rating"
+      input = gets.strip.to_i
+
+      AaqFeedback::Report.find_and_create_from_survey
+
+      if input == 1
+
+        puts AaqFeedback::Report.tokens
+      elsif input == 2
+        puts AaqFeedback::Report.average_rating
+      end
     elsif input == 2
       puts "Technical Coach"
     else
