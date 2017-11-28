@@ -20,6 +20,7 @@ class AaqFeedback::Report
     @@tokens.count
   end
 
+#--- TAGGING THE SURVEY ---#
   def self.find_and_create_from_survey
     surveys = AaqFeedback::API.new.surveys
     surveys.each do |survey|
@@ -81,17 +82,24 @@ class AaqFeedback::Report
     end
   end
 
-  def self.average_rating
+  def self.monthly_feedback(month)
+    tokens_from_month = self.tokens.select{|token| token.date.include?("2017-#{month}")}
+    tokens_from_month
+  end
+  #----- RATINGS ----#
+  def self.average_rating(month)
     #REMINDER = need to add date range in this
     ratings = []
-    self.tokens.select{|token| ratings << token.rating}
+    self.monthly_feedback(month).select{|token| ratings << token.rating}
     average = ratings.inject{ |sum, el| sum + el }.to_f / ratings.size
     puts average
   end
 
-  def self.all_positive_feedback
+  #-----FEEDBACK-----#
+
+  def self.all_positive_feedback(month)
     all_positive_feedback = []
-    self.tokens.select do |token|
+      self.monthly_feedback(month).select do |token|
       token.positive_feedback.each{|feedback| all_positive_feedback << feedback}
     end
 
@@ -103,15 +111,15 @@ class AaqFeedback::Report
     @concise_concepts = all_positive_feedback.select{|feedback| feedback == "Explain concepts clearly and concisely"}.count
   end
 
-  def self.frequency_of_positive_feedback
-    self.all_positive_feedback
+  def self.frequency_of_positive_feedback(month)
+    self.all_positive_feedback(month)
 
     "Guide me while I debug my code: #{((@guide_me.to_i / num_tokens.to_f)*100).round(2)}% \n Boosted my confidence in my codin/debugging skills: #{((@confidence / num_tokens.to_f)*100).round(2)}% \n I was able to speak to them immediately and have a screenshare quickly: #{((@immediate/num_tokens.to_f)*100).round(2)}% \n Explain concepts clearly and concisely: #{((@concise_concepts / num_tokens.to_f)*100).round(2)}%"
   end
 
-  def self.all_negative_feedback
+  def self.all_negative_feedback(month)
     all_negative_feedback = []
-    self.tokens.select do |token|
+      self.monthly_feedback(month).select do |token|
       token.negative_feedback.each{|feedback| all_negative_feedback << feedback}
     end
 
@@ -123,8 +131,8 @@ class AaqFeedback::Report
     @explain_concepts = all_negative_feedback.select{|feedback| feedback == "Explain concepts clearly and share resources"}.count
   end
 
-  def self.frequency_of_negative_feedback
-    self.all_negative_feedback
+  def self.frequency_of_negative_feedback(month)
+    self.all_negative_feedback(month)
 
     "Ask me more questions: #{((@ask_more.to_i / num_tokens.to_f)*100).round(2)}% \n Encourage me: #{((@encourage_me / num_tokens.to_f)*100).round(2)}% \n Decrease waittime: #{((@decrease_waittime/num_tokens.to_f)*100).round(2)}% \n Explain concepts clearly and share resources: #{((@explain_concepts / num_tokens.to_f)*100).round(2)}%"
   end
