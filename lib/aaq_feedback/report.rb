@@ -1,5 +1,5 @@
 class AaqFeedback::Report
-  attr_accessor :date, :positive_feedback, :negative_feedback, :who_supported_student, :student_course, :rating, :regular_comment, :other_positive_comment, :other_negative_comment, :token
+  attr_accessor :date, :positive_feedback, :negative_feedback, :who_supported_student, :student_course, :rating, :regular_comment, :other_positive_comment, :other_negative_comment, :token, :technical_coaches
 
   attr_reader :num_tokens
 
@@ -9,6 +9,7 @@ class AaqFeedback::Report
     @token = token
     @positive_feedback = []
     @negative_feedback =[]
+    @technical_coaches = []
   end
 
   def self.tokens
@@ -26,7 +27,24 @@ class AaqFeedback::Report
       token.date = survey["metadata"]["date_submit"]
       token.who_supported_student = survey["answers"]["list_64949235_choice"]
       token.student_course = survey["answers"]["list_66678398_choice"]
-      #! @technical_coach = survey["answers"][/^list_64196466/] << I want this to show the technical coach name
+
+      #Technical Coahes attached to the feedback -- need to add the all the technical coaches
+      survey["answers"].each do |key, value|
+        list_name = "list_64196466_choice_"
+        case key
+        when list_name + "80218145"
+          token.technical_coaches << "Bob"
+        when list_name + "80218146"
+          token.technical_coaches << "Brian"
+        when list_name + "80218147"
+          token.technical_coaches << "Dakota"
+        when list_name + "80218156"
+          token.technical_coaches << "Daniel"
+        when list_name + "80218148"
+          token.technical_coaches << "Enoch"
+        end
+      end
+
       token.rating = survey["answers"]["rating_MIWlzH1BLFWb"].to_i
 
       #unique comments from students
@@ -36,23 +54,26 @@ class AaqFeedback::Report
 
       #feedback response
       survey["answers"]. each do |key, value|
-        #positive feedback response
-        if key == "list_z3PoGEKivPJy_choice_w5gBmbDDFw8U"
+        # positive feedback response
+        list_name = "list_z3PoGEKivPJy_choice_"
+
+        case key #add a loop?
+        when list_name + "w5gBmbDDFw8U"
           token.positive_feedback << "guide me while I debug my code"
-        elsif key == "list_z3PoGEKivPJy_choice_hZUNhYcKu2YU"
+        when list_name + "hZUNhYcKu2YU"
           token.positive_feedback << "Boosted my confidence in my coding debugging skills"
-        elsif key == "list_z3PoGEKivPJy_choice_Es8ECIWFTZ7a"
+        when list_name + "Es8ECIWFTZ7a"
           token.positive_feedback << "I was able to speak to them immediately and have a screenshare quickly"
-        elsif key == "list_z3PoGEKivPJy_choice_DXnkiNkeYsDl"
+        when list_name + "DXnkiNkeYsDl"
           token.positive_feedback<< "Explain concepts clearly and concisely"
-        #negative feedback response
-        elsif key == "list_AOFdoBaHgkUy_choice_poNMdtvx7lHi"
+        # negative feedback response
+        when list_name + "poNMdtvx7lHi"
           token.negative_feedback << "Ask me more questions"
-        elsif key == "list_AOFdoBaHgkUy_choice_oHXicFgyGi2h"
+        when "list_AOFdoBaHgkUy_choice_oHXicFgyGi2h"
           token.negative_feedback << "Encourage me"
-        elsif key == "list_AOFdoBaHgkUy_choice_kNj37gv2WRgU"
+        when list_name + "kNj37gv2WRgU"
           token.negative_feedback<< "Decrease waittime"
-        elsif key == "list_AOFdoBaHgkUy_choice_Oqvv5HXi5kyK"
+        when list_name + "Oqvv5HXi5kyK"
           token.negative_feedback << "Explain concepts clearly and share resources"
         end
       end
@@ -73,7 +94,9 @@ class AaqFeedback::Report
     self.tokens.select do |token|
       token.positive_feedback.each{|feedback| all_positive_feedback << feedback}
     end
+
     all_positive_feedback
+
     @guide_me = all_positive_feedback.select{|feedback| feedback == "guide me while I debug my code"}.count
     @confidence = all_positive_feedback.select{|feedback| feedback == "Boosted my confidence in my coding debugging skills"}.count
     @immediate = all_positive_feedback.select{|feedback| feedback == "I was able to speak to them immediately and have a screenshare quickly"}.count
@@ -83,7 +106,7 @@ class AaqFeedback::Report
   def self.frequency_of_positive_feedback
     self.all_positive_feedback
 
-    "Guide me while I debug my code: #{(@guide_me.to_i / num_tokens.to_f)*100}% \n Boosted my confidence in my codin/debugging skills: #{(@confidence / num_tokens.to_f)*100}% \n I was able to speak to them immediately and have a screenshare quickly: #{(@immediate/num_tokens.to_f)*100}% \n Explain concepts clearly and concisely: #{(@concise_concepts / num_tokens.to_f)*100}%"
+    "Guide me while I debug my code: #{((@guide_me.to_i / num_tokens.to_f)*100).round(2)}% \n Boosted my confidence in my codin/debugging skills: #{((@confidence / num_tokens.to_f)*100).round(2)}% \n I was able to speak to them immediately and have a screenshare quickly: #{((@immediate/num_tokens.to_f)*100).round(2)}% \n Explain concepts clearly and concisely: #{((@concise_concepts / num_tokens.to_f)*100).round(2)}%"
   end
 
   def self.all_negative_feedback
@@ -91,14 +114,19 @@ class AaqFeedback::Report
     self.tokens.select do |token|
       token.negative_feedback.each{|feedback| all_negative_feedback << feedback}
     end
+
     all_negative_feedback
-    binding.pry
-    # @pos1 = all_positive_feedback.select{|feedback| feedback == "guide me while I debug my code"}.count
-    # pos2 = all_positive_feedback.select{|feedback| feedback == "guide me while I debug my code"}.count
-    # pos3 = all_positive_feedback.select{|feedback| feedback == "guide me while I debug my code"}.count
-    # pos4 = all_positive_feedback.select{|feedback| feedback == "guide me while I debug my code"}.count
+
+    @ask_more = all_negative_feedback.select{|feedback| feedback == "Ask me more questions"}.count
+    @encourage_me = all_negative_feedback.select{|feedback| feedback == "Encourage me"}.count
+    @decrease_waittime = all_negative_feedback.select{|feedback| feedback == "Decrease waittime"}.count
+    @explain_concepts = all_negative_feedback.select{|feedback| feedback == "Explain concepts clearly and share resources"}.count
+  end
+
+  def self.frequency_of_negative_feedback
+    self.all_negative_feedback
+
+    "Ask me more questions: #{((@ask_more.to_i / num_tokens.to_f)*100).round(2)}% \n Encourage me: #{((@encourage_me / num_tokens.to_f)*100).round(2)}% \n Decrease waittime: #{((@decrease_waittime/num_tokens.to_f)*100).round(2)}% \n Explain concepts clearly and share resources: #{((@explain_concepts / num_tokens.to_f)*100).round(2)}%"
   end
 
 end
-
-# {"token"=>"9676fcf15120e3b26a663fd9b271b1c0", "completed"=>"1", "metadata"=>{"browser"=>"default", "platform"=>"other", "date_land"=>"2017-11-22 20:22:35", "date_submit"=>"2017-11-22 20:27:37", "user_agent"=>"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36", "referer"=>"https://theflatironschool.typeform.com/to/TW4DdU", "network_id"=>"f269724f24"}, "hidden"=>[], "answers"=>{"list_66678398_choice"=>"Full Stack Web Development", "list_64949235_choice"=>"Technical Coach", "list_64196466_choice_82327381"=>"Benton", "rating_MIWlzH1BLFWb"=>"2", "list_z3PoGEKivPJy_choice_Es8ECIWFTZ7a"=>"I was able to speak to them immediately and have a screenshare quickly", "list_AOFdoBaHgkUy_choice_poNMdtvx7lHi"=>"Ask me more questions", "list_AOFdoBaHgkUy_choice_Oqvv5HXi5kyK"=>"Explain concepts clearly and share resources", "textarea_ummCANBFwJ5i"=>"Though he was very interested in helping me solve the lab. I had a question about using a selector in a specific way and why it wasn't working and using selectors dynamically which he seemed to either not know how to  use them how I wanted to or was concentrating on doing the whole lab. He also started talking about bootstrap and wanted to change all my class names to match bootstrap which would not help me since I have not gotten to that section (also had nothing to do with my question). He gave me a solution which I already knew was available (but wanted to do in a different way)."}}
