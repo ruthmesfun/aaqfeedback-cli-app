@@ -6,6 +6,4 @@ require_relative "aaq_feedback/version"
 require_relative "aaq_feedback/api"
 require_relative "aaq_feedback/cli"
 require_relative "aaq_feedback/report"
-
-module AaqFeedback
-end
+require_relative "aaq_feedback/technical_coach"
