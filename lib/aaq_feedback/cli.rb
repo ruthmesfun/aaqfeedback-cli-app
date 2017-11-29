@@ -19,10 +19,10 @@ class AaqFeedback::CLI
         puts " Would you like 1. All data, 2. Average rating, 3.Frequency, 4. All of the above, 5. End"
         input = gets.strip.to_i
 
-        AaqFeedback::Report.find_and_create_from_survey
+        AaqFeedback::Token.find_and_create_from_survey
           case input
           when 1
-            puts AaqFeedback::Report.tokens
+            puts AaqFeedback::Token.tokens
             puts "\n to end this app type 0"
             input = gets.strip.to_i
           when 2
@@ -60,8 +60,8 @@ class AaqFeedback::CLI
           puts "Thank you for trying out the Technical Coach Feedback App!"
         end
       elsif input == 2
-        AaqFeedback::Report.find_and_create_from_survey
-        
+        AaqFeedback::Token.find_and_create_from_survey
+
         puts "Which Technical Coach would you like feedback?"
         technical_coach = gets.strip
         puts "What month would you like an to choose from? 1-12"
