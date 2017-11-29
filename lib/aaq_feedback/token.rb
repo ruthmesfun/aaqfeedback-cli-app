@@ -31,18 +31,9 @@ class AaqFeedback::Token
 
       #Technical Coahes attached to the feedback -- need to add the all the technical coaches
       survey["answers"].each do |key, value|
-        list_name = "list_64196466_choice_"
-        case key
-        when list_name + "80218145"
-          token.technical_coaches << "Bob"
-        when list_name + "80218146"
-          token.technical_coaches << "Brian"
-        when list_name + "80218147"
-          token.technical_coaches << "Dakota"
-        when list_name + "80218156"
-          token.technical_coaches << "Daniel"
-        when list_name + "80218148"
-          token.technical_coaches << "Enoch"
+        list_name = "list_64196466_choice"
+        if key.include?(list_name)
+          token.technical_coaches << value
         end
       end
 
@@ -53,30 +44,15 @@ class AaqFeedback::Token
       token.other_positive_comment = survey["answers"]["list_z3PoGEKivPJy_other"]
       token.other_negative_comment = survey["answers"]["list_AOFdoBaHgkUy_other"]
 
-      #feedback response
+      #feedback response -- positive and negative
       survey["answers"]. each do |key, value|
-        # positive feedback response
-        positive_list_name = "list_z3PoGEKivPJy_choice_"
-        negative_list_name = "list_AOFdoBaHgkUy_choice_"
+        positive_list_name = "z3PoGEKivPJy"
+        negative_list_name = "AOFdoBaHgkUy"
 
-        case key #add a loop?
-        when positive_list_name + "w5gBmbDDFw8U"
-          token.positive_feedback << "guide me while I debug my code"
-        when positive_list_name + "hZUNhYcKu2YU"
-          token.positive_feedback << "Boosted my confidence in my coding debugging skills"
-        when positive_list_name + "Es8ECIWFTZ7a"
-          token.positive_feedback << "I was able to speak to them immediately and have a screenshare quickly"
-        when positive_list_name + "DXnkiNkeYsDl"
-          token.positive_feedback<< "Explain concepts clearly and concisely"
-        # negative feedback response
-        when negative_list_name + "poNMdtvx7lHi"
-          token.negative_feedback << "Ask me more questions"
-        when "list_AOFdoBaHgkUy_choice_oHXicFgyGi2h"
-          token.negative_feedback << "Encourage me"
-        when negative_list_name + "kNj37gv2WRgU"
-          token.negative_feedback<< "Decrease waittime"
-        when negative_list_name + "Oqvv5HXi5kyK"
-          token.negative_feedback << "Explain concepts clearly and share resources"
+        if key.include?(positive_list_name)
+          token.positive_feedback << value
+        elsif key.include?(negative_list_name)
+          token.negative_feedback << value
         end
       end
       self.tokens << token
