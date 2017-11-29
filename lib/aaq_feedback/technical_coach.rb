@@ -14,7 +14,7 @@ class AaqFeedback::TechnicalCoach
   def self.tokens
     @@tokens
   end
-  
+
 
 
 
