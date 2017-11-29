@@ -60,7 +60,13 @@ class AaqFeedback::CLI
           puts "Thank you for trying out the Technical Coach Feedback App!"
         end
       elsif input == 2
-        puts "Technical Coach"
+        AaqFeedback::Report.find_and_create_from_survey
+        
+        puts "Which Technical Coach would you like feedback?"
+        technical_coach = gets.strip
+        puts "What month would you like an to choose from? 1-12"
+        month = gets.strip
+        puts AaqFeedback::Report.technical_coach_average_rating(month, technical_coach)
       else
         puts "I don't understand that choice."
         menu
