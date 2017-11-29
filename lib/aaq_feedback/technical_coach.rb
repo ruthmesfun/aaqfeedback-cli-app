@@ -1,8 +1,21 @@
 class AaqFeedback::TechnicalCoach
-  attr_accessor :name, :start_date, :end_date, :rating, :glows, :grows
+  attr_accessor :report, :name, :feedback
 
-  def name
+# Grab the ratings of the technical coaches
+# Grab the frequency for the technical coaches
+  @@tokens = []
 
+  def initialize(name)
+    @name = name
+
+    @feedback = []
   end
+
+  def self.tokens
+    @@tokens
+  end
+  
+
+
 
 end
