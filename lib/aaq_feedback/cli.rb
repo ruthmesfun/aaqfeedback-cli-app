@@ -16,7 +16,7 @@ class AaqFeedback::CLI
 
     if input == 1
       while input > 0
-        puts " Would you like 1. All data, 2. Average rating, 3.Frequency, 4. All of the above, 5. End"
+        puts " Would you like 1. All data, 2. Average Rating & Feedback Frequency, 0. End"
         input = gets.strip.to_i
 
         AaqFeedback::Token.find_and_create_from_survey
@@ -26,23 +26,6 @@ class AaqFeedback::CLI
             puts "\n to end this app type 0"
             input = gets.strip.to_i
           when 2
-            puts "What month would you like an to choose from? 1-12"
-            month = gets.strip
-            puts AaqFeedback::Report.average_rating(month)
-            puts "\n to end this app type 0"
-            input = gets.strip.to_i
-          when 3
-            puts "What month would you like an to choose from? 1-12"
-            month = gets.strip
-
-            puts "POSITIVE FEEDBACK \n-----------------"
-            puts AaqFeedback::Report.frequency_of_positive_feedback(month)
-            puts "\n \n "
-            puts "NEGATIVE FEEDBACK \n-----------------"
-            puts AaqFeedback::Report.frequency_of_negative_feedback(month)
-            puts "\n to end this app type 0"
-            input = gets.strip.to_i
-          when 4
             puts "What month would you like an to choose from? 1-12"
             month = gets.strip
 
@@ -66,10 +49,22 @@ class AaqFeedback::CLI
         technical_coach = gets.strip
         puts "What month would you like an to choose from? 1-12"
         month = gets.strip
-        puts AaqFeedback::Report.technical_coach_average_rating(month, technical_coach)
+        puts "AVERAGE RATING \n-----------------"
+        puts AaqFeedback::Report.average_rating(month, technical_coach)
+        puts "\n \n "
+        puts "POSITIVE FEEDBACK \n-----------------"
+        puts AaqFeedback::Report.frequency_of_positive_feedback_tc(month,technical_coach)
+        puts "\n \n "
+        puts "NEGATIVE FEEDBACK \n-----------------"
+        puts AaqFeedback::Report.frequency_of_negative_feedback_tc(month, technical_coach)
+        puts "\n \n "
+        puts "OTHER FEEDBACK \n-----------------"
+        puts AaqFeedback::Report.other_feedback(month, technical_coach)
+
       else
         puts "I don't understand that choice."
         menu
       end
+      puts "Thank you for trying out the Technical Coach Feedback App!"
     end
 end
